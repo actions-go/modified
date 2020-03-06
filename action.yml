@@ -1,10 +1,41 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'modified-file'
+description: |
+  Sets outputs wheter and which matching files has been modified since between 2 commits
+  It is the equivalent of `git log base..head`.
+  It uses the github API to compare both commits: https://developer.github.com/v3/repos/commits/#compare-two-commits
+author: 'Thibault Jamet'
+branding:
+  icon: file-plus
+  color: green
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  head:
+    description: |
+      The commit to be compared to base.
+      This parameter is required when running on an event different from push.
+      When handling a push event, it defauts to the `After` field of the push event:
+        https://developer.github.com/v3/activity/events/types/#pushevent
+  base:
+    description: |
+      The commit head is compared to.
+      This parameter is required when running on an event different from push.
+      When handling a push event, it defauts to the `Before` field of the push event:
+        https://developer.github.com/v3/activity/events/types/#pushevent
+  pattern:
+    decription: |
+      The pattern to which modified paths are matched.
+    required: true
+  use-glob:
+    description: |
+      Whether to use the simplee glob syntax, extended with the `**` pattern matching
+      paths with path separator
+    default: true
+outputs:
+  modified:
+    description: |
+      true when any modified file between base and head matches pattern
+  modified-files:
+    description: |
+      a json encoded list of all files modified between base and head
 runs:
   using: 'node12'
   main: 'dist/index.js'

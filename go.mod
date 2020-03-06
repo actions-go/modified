@@ -3,6 +3,7 @@ module github.com/actions-go/go-action
 go 1.13
 
 require (
-	github.com/actions-go/toolkit v0.0.0-20200119151346-09edac1c7d93
+	github.com/actions-go/toolkit v0.0.0-20200127215724-dd77f9146eff
+	github.com/google/go-github/v29 v29.0.2
 	github.com/stretchr/testify v1.4.0
 )
