@@ -27,6 +27,8 @@ func reset() {
 
 func clean() {
 	github.Context.Payload.PushEvent = nil
+	github.Context.Repo.Owner = ""
+	github.Context.Repo.Repo = ""
 	os.Unsetenv("INPUT_HEAD")
 	os.Unsetenv("INPUT_BASE")
 	os.Unsetenv("INPUT_PATTERN")
