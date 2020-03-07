@@ -25,14 +25,16 @@ my-job:
 ### head
 
 The commit to be compared to base.
-This parameter is required when running on an event different from push.
+This parameter is required when running on an event different from push or pullrequest.
+When handling a pullrequest event, it defaults to the pullrequest head sha.
 When handling a push event, it defauts to the `After` field of the push event:
   https://developer.github.com/v3/activity/events/types/#pushevent
 
 ### base
 
 The commit head is compared to.
-This parameter is required when running on an event different from push.
+This parameter is required when running on an event different from push or pullrequest.
+When handling a pullrequest event, it defaults to the pullrequest base sha.
 When handling a push event, it defauts to the `Before` field of the push event:
   https://developer.github.com/v3/activity/events/types/#pushevent
 

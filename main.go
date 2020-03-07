@@ -85,11 +85,19 @@ func orError(msg, s string) string {
 }
 
 func base() string {
-	return orError(`"base" input is required when triggering on events different from pushes`, first(input("base"), github.Context.Payload.GetBefore()))
+	sha := github.Context.Payload.GetBefore()
+	if github.Context.Payload.PullRequest != nil {
+		sha = github.Context.Payload.PullRequest.GetBase().GetSHA()
+	}
+	return orError(`"base" input is required when triggering on events different from pushes`, first(input("base"), sha))
 }
 
 func head() string {
-	return orError(`"head" input is required when triggering on events different from pushes`, first(input("head"), github.Context.Payload.GetAfter()))
+	sha := github.Context.Payload.GetAfter()
+	if github.Context.Payload.PullRequest != nil {
+		sha = github.Context.Payload.PullRequest.GetHead().GetSHA()
+	}
+	return orError(`"head" input is required when triggering on events different from pushes`, first(input("head"), sha))
 }
 
 func owner() string {

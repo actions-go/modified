@@ -27,6 +27,7 @@ func reset() {
 
 func clean() {
 	github.Context.Payload.PushEvent = nil
+	github.Context.Payload.PullRequest = nil
 	github.Context.Repo.Owner = ""
 	github.Context.Repo.Repo = ""
 	os.Unsetenv("INPUT_HEAD")
@@ -41,6 +42,17 @@ func setup() {
 	github.Context.Payload.PushEvent = &gh.PushEvent{
 		Before: gh.String(testBase),
 		After:  gh.String(testHead),
+	}
+}
+
+func setupPR() {
+	github.Context.Payload.PullRequest = &gh.PullRequest{
+		Head: &gh.PullRequestBranch{
+			SHA: gh.String(testHead),
+		},
+		Base: &gh.PullRequestBranch{
+			SHA: gh.String(testBase),
+		},
 	}
 }
 
@@ -62,6 +74,9 @@ func TestBase(t *testing.T) {
 	assert.Equal(t, "", base())
 	setup()
 	assert.Equal(t, testBase, base())
+	clean()
+	setupPR()
+	assert.Equal(t, testBase, base())
 	os.Setenv("INPUT_BASE", "1234abcd")
 	assert.Equal(t, "1234abcd", base())
 }
@@ -71,6 +86,9 @@ func TestHead(t *testing.T) {
 	clean()
 	assert.Equal(t, "", head())
 	setup()
+	assert.Equal(t, testHead, head())
+	clean()
+	setupPR()
 	assert.Equal(t, testHead, head())
 	os.Setenv("INPUT_HEAD", "1234abcdef")
 	assert.Equal(t, "1234abcdef", head())

@@ -5,19 +5,21 @@ description: |
   It uses the github API to compare both commits: https://developer.github.com/v3/repos/commits/#compare-two-commits
 author: 'Thibault Jamet'
 branding:
-  icon: file-plus
+  icon: file-p#lus
   color: green
 inputs:
   head:
     description: |
       The commit to be compared to base.
-      This parameter is required when running on an event different from push.
+      This parameter is required when running on an event different from push or pullrequest.
+      When handling a pullrequest event, it defaults to the pullrequest head sha.
       When handling a push event, it defauts to the `After` field of the push event:
         https://developer.github.com/v3/activity/events/types/#pushevent
   base:
     description: |
       The commit head is compared to.
-      This parameter is required when running on an event different from push.
+      This parameter is required when running on an event different from push or pullrequest.
+      When handling a pullrequest event, it defaults to the pullrequest base sha.
       When handling a push event, it defauts to the `Before` field of the push event:
         https://developer.github.com/v3/activity/events/types/#pushevent
   pattern:
