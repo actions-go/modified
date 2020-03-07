@@ -5,7 +5,7 @@ description: |
   It uses the github API to compare both commits: https://developer.github.com/v3/repos/commits/#compare-two-commits
 author: 'Thibault Jamet'
 branding:
-  icon: file-p#lus
+  icon: file-plus
   color: green
 inputs:
   head:
