@@ -10,7 +10,7 @@ import (
 
 	"github.com/actions-go/toolkit/core"
 	"github.com/actions-go/toolkit/github"
-	gh "github.com/google/go-github/v29/github"
+	gh "github.com/google/go-github/v42/github"
 	"github.com/stretchr/testify/assert"
 )
 
