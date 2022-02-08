@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/actions-go/toolkit/core"
@@ -20,9 +21,34 @@ const (
 	testRepo  = "toolkit"
 )
 
+var (
+	origEnv = getenv()
+)
+
+func getenv() map[string]string {
+	env := map[string]string{}
+	for _, kv := range os.Environ() {
+		kvs := strings.SplitN(kv, "=", 2)
+		if len(kvs) > 1 {
+			env[kvs[0]] = kvs[1]
+		} else {
+			env[kvs[0]] = ""
+		}
+	}
+	return env
+}
+
 func reset() {
 	clean()
 	github.Context = github.ParseActionEnv()
+	for k := range getenv() {
+		if _, ok := origEnv[k]; !ok {
+			os.Unsetenv(k)
+		}
+	}
+	for k, v := range origEnv {
+		os.Setenv(k, v)
+	}
 }
 
 func clean() {
@@ -34,6 +60,9 @@ func clean() {
 	os.Unsetenv("INPUT_BASE")
 	os.Unsetenv("INPUT_PATTERN")
 	os.Unsetenv("INPUT_USE-GLOB")
+	os.Unsetenv("GITHUB_TOKEN")
+	os.Unsetenv("INPUT_GITHUB_TOKEN")
+	os.Unsetenv("INPUT_TOKEN")
 }
 
 func setup() {
@@ -58,6 +87,7 @@ func setupPR() {
 
 func TestIntegrated(t *testing.T) {
 	defer reset()
+	clean()
 	setup()
 	os.Setenv("INPUT_PATTERN", "**/*_test.go")
 	os.Setenv("INPUT_USE-GLOB", "true")
@@ -112,12 +142,19 @@ func TestRepo(t *testing.T) {
 
 func TestPattern(t *testing.T) {
 	defer reset()
+	clean()
 	setup()
-	assert.Equal(t, "", pattern())
+	pat, err := pattern()
+	assert.NoError(t, err)
+	assert.Equal(t, "", pat)
 	os.Setenv("INPUT_PATTERN", ".*")
-	assert.Equal(t, ".*", pattern())
+	pat, err = pattern()
+	assert.NoError(t, err)
+	assert.Equal(t, ".*", pat)
 	os.Setenv("INPUT_USE-GLOB", "true")
-	assert.Equal(t, `^\.[^/]*$`, pattern())
+	pat, err = pattern()
+	assert.NoError(t, err)
+	assert.Equal(t, `^\.[^/]*$`, pat)
 }
 
 func TestModified(t *testing.T) {
@@ -132,6 +169,7 @@ func TestModified(t *testing.T) {
 
 func TestFilterMatching(t *testing.T) {
 	defer reset()
+	clean()
 	os.Setenv("INPUT_PATTERN", "**/*_test.go")
 	// When the pattern is invalid
 	assert.Equal(t, []string{}, filterMatching([]string{"some/path/pkg_test.go"}))

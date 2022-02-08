@@ -49,7 +49,7 @@ func globToRegexp(g string) string {
 	return r + "$"
 }
 
-func pattern() string {
+func pattern() (string, error) {
 	pattern := input("pattern")
 	useGlob := core.GetBoolInput("use-glob")
 	if useGlob {
@@ -57,11 +57,11 @@ func pattern() string {
 		_, err := path.Match(pattern, "")
 		if err != nil {
 			core.Errorf("invalid pattern %s: %v", pattern, err)
-			return ""
+			return "", err
 		}
-		return globToRegexp(pattern)
+		return globToRegexp(pattern), nil
 	}
-	return pattern
+	return pattern, nil
 }
 
 func first(args ...string) string {
@@ -122,7 +122,12 @@ func modifiedFiles() []string {
 }
 
 func filterMatching(paths []string) []string {
-	pattern, err := regexp.Compile(pattern())
+	exp, err := pattern()
+	if err != nil {
+		core.Errorf("failed to compile pattern: %v", err)
+		return []string{}
+	}
+	pattern, err := regexp.Compile(exp)
 	if err != nil {
 		core.Errorf("failed to compile pattern: %v", err)
 		return []string{}
