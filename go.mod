@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/actions-go/toolkit v0.0.0-20200127215724-dd77f9146eff
 	github.com/google/go-github/v29 v29.0.2
-	github.com/stretchr/testify v1.4.0
+	github.com/stretchr/testify v1.7.0
 )
 
 require (
@@ -17,5 +17,5 @@ require (
 	golang.org/x/net v0.0.0-20190311183353-d8887717615a // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
 	google.golang.org/appengine v1.4.0 // indirect
-	gopkg.in/yaml.v2 v2.2.2 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
