@@ -10,6 +10,7 @@ import (
 
 	"github.com/actions-go/toolkit/core"
 	"github.com/actions-go/toolkit/github"
+	gh "github.com/google/go-github/v42/github"
 )
 
 func globToRegexp(g string) string {
@@ -110,7 +111,7 @@ func repo() string {
 
 func modifiedFiles() []string {
 	r := []string{}
-	comparison, _, err := github.GitHub.Repositories.CompareCommits(context.Background(), owner(), repo(), base(), head())
+	comparison, _, err := github.GitHub.Repositories.CompareCommits(context.Background(), owner(), repo(), base(), head(), &gh.ListOptions{})
 	if err != nil {
 		core.Errorf("failed to compare commits through the API: %v", err)
 		return r
